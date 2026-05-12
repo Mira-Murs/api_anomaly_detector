@@ -1,0 +1,164 @@
+services:
+  llm_guard:
+    build: ../app/services/llm_guard
+    container_name: llm_guard
+    ports:
+      - "8008:8000"
+    networks:
+      - api_network
+  redis:
+    image: redis:7-alpine
+    container_name: api_redis
+    restart: unless-stopped
+    networks:
+      - api_network
+  session_metrics:
+    build: ../app/services/session_metrics
+    container_name: session_metrics
+    ports:
+      - "8009:8000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    networks:
+      - api_network
+  log_collector:
+    build: ../app/services/log_collector
+    container_name: log_collector
+    ports:
+      - "8004:8000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - api_network
+
+  normalizer:
+    build: ../app/services/normalizer
+    container_name: normalizer
+    ports:
+      - "8002:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - api_network
+
+  feature_extractor:
+    build: ../app/services/feature_extractor
+    container_name: feature_extractor
+    ports:
+      - "8005:8000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - api_network
+
+  anomaly_detector:
+    build: ../app/services/anomaly_detector
+    container_name: anomaly_detector
+    ports:
+      - "8001:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - MODEL_PATH=/app/models/isolation_forest_final.joblib
+    volumes:
+      - ../artifacts/models:/app/models
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - api_network
+
+  risk_engine:
+    build: ../app/services/risk_engine
+    container_name: risk_engine
+    ports:
+      - "8003:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - VULN_CONTEXT_URL=http://vuln_context:8000
+      - THETA1_DEFAULT=0.6
+      - THETA2_DEFAULT=1.0
+      - K_LOAD_DEFAULT=0.2
+      - K_UNC_DEFAULT=0.1
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - api_network
+
+  vuln_context:
+    build: ../app/services/vuln_context
+    container_name: vuln_context
+    ports:
+      - "8006:8000"
+    environment:
+      - REDIS_HOST=redis
+      - REPORTS_DIR=/app/reports
+    volumes:
+      - ../artifacts/reports:/app/reports
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - api_network
+
+  response_orchestrator:
+    build: ../app/services/response_orchestrator
+    container_name: response_orchestrator
+    ports:
+      - "8007:8000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - api_network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    restart: unless-stopped
+    networks:
+      - api_network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - api_network
+
+networks:
+  api_network:
+    driver: bridge
+
+volumes:
+  grafana_data:

@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+redis
+pydantic
+numpy
+scipy
+httpx
+prometheus-fastapi-instrumentator

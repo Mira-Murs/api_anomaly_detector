@@ -1,0 +1,79 @@
+name: api-anomaly-detector-ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Validate shell scripts
+        run: |
+          bash -n run.sh
+          bash -n app/scripts/runtime/run_ml_report.sh
+          bash -n app/scripts/runtime/continuous_worker.sh
+          bash -n app/scripts/runtime/generate_traffic.sh
+          bash -n app/scripts/runtime/safe_update_model.sh
+
+      - name: Validate Python syntax
+        run: |
+          python -m py_compile \
+            app/services/log_collector/app.py \
+            app/services/normalizer/app.py \
+            app/services/feature_extractor/app.py \
+            app/services/anomaly_detector/app.py \
+            app/services/risk_engine/app.py \
+            app/services/vuln_context/app.py \
+            app/services/response_orchestrator/app.py \
+            app/services/llm_guard/app.py \
+            app/services/session_metrics/app.py \
+            app/scripts/runtime/generate_report.py \
+            app/scripts/runtime/monitor_drift.py \
+            app/scripts/validation/validate_runtime_contracts.py \
+            app/scripts/validation/validate_labeled_events.py \
+            app/scripts/validation/validate_recommended_fixes.py \
+            app/adapt_model.py
+
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyyaml
+
+      - name: Validate data contracts
+        run: |
+          python -m json.tool app/schemas/runtime_contracts.json > /dev/null
+          python -m json.tool app/schemas/labeled_event_contract.json > /dev/null
+          python -m json.tool app/schemas/recommended_fixes_contract.json > /dev/null
+          python app/scripts/validation/validate_runtime_contracts.py
+          python app/scripts/validation/validate_labeled_events.py artifacts/data/labeled_samples/runtime_labeled_sample.jsonl
+          if [ -f artifacts/reports/recommended_fixes.yaml ]; then
+            python app/scripts/validation/validate_recommended_fixes.py artifacts/reports/recommended_fixes.yaml
+          fi
+
+      - name: Validate Docker Compose
+        run: docker compose -f infra/docker-compose.yml config
+
+      - name: Run Semgrep
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: auto
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          exit-code: "0"
+          severity: CRITICAL,HIGH,MEDIUM

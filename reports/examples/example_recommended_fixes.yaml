@@ -1,0 +1,73 @@
+generated_at: "2026-05-01 11:29:54 UTC"
+summary:
+  unique_vulnerabilities: 0
+  sast_findings: 0
+  cve_findings: 0
+  dast_findings: 0
+  dast_security_findings: 0
+  dast_informational_findings: 0
+  risk_prioritized_findings: 0
+incidents:
+  - endpoint: "/api/a09-misinformation/process_image"
+    user: "attack_probe"
+    risk_score: 1.500
+    risk_zone: "blocked"
+    action: "block"
+    findings:
+      []
+    risk_prioritized:
+      []
+    recommendations:
+      - "Review access policies for endpoint /api/a09-misinformation/process_image"
+      - "Consider temporary blocking or increased monitoring"
+  - endpoint: "/api/a09-misinformation/process_image"
+    user: "anonymous"
+    risk_score: 1.500
+    risk_zone: "blocked"
+    action: "block"
+    findings:
+      []
+    risk_prioritized:
+      []
+    recommendations:
+      - "Review access policies for endpoint /api/a09-misinformation/process_image"
+      - "Consider temporary blocking or increased monitoring"
+  - endpoint: "/api/a09-misinformation/process_image"
+    user: "attack_probe"
+    risk_score: 0.286
+    risk_zone: "elevated"
+    action: "challenge_mfa"
+    findings:
+      []
+    risk_prioritized:
+      []
+    recommendations:
+      - "Review access policies for endpoint /api/a09-misinformation/process_image"
+  - endpoint: "/api/a09-misinformation/process_image"
+    user: "anonymous"
+    risk_score: 0.286
+    risk_zone: "elevated"
+    action: "challenge_mfa"
+    findings:
+      []
+    risk_prioritized:
+      []
+    recommendations:
+      - "Review access policies for endpoint /api/a09-misinformation/process_image"
+remediation_targets:
+  - endpoint: "/api/a09-misinformation/process_image"
+    affected_users:
+      - "anonymous"
+      - "attack_probe"
+    max_risk_score: 1.500
+    highest_risk_zone: "blocked"
+    strongest_action: "block"
+    findings:
+      []
+    risk_prioritized:
+      []
+    recommendations:
+      - "Review access policies for endpoint /api/a09-misinformation/process_image"
+      - "Consider temporary blocking or increased monitoring"
+project_wide_fixes:
+  []

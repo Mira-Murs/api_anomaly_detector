@@ -1,0 +1,54 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.old
+.DS_Store
+Thumbs.db
+
+# Local virtual environments
+.venv/
+venv/
+env/
+
+# Runtime-generated reports and caches
+artifacts/reports/
+artifacts/trivy-cache/
+artifacts/controlled_runs/
+artifacts/tool_runtimes/
+runtime_envs/
+
+# Model update backups generated at runtime
+artifacts/models/*.bak
+artifacts/models/adaptation_audit.jsonl
+artifacts/models/rejected_adaptation_samples.npy
+
+# Docker and local volumes
+redis_data/
+grafana_data/
+prometheus_data/
+
+# Local external targets
+external/test_apps
+
+# Large regenerated datasets
+artifacts/data/raw/
+artifacts/data/processed/
+artifacts/data/external_datasets/
+
+# Latest generated security deliverables
+reports/latest/

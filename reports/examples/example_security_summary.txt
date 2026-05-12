@@ -1,0 +1,26 @@
+======== SECURITY SUMMARY REPORT ========
+
+--- Runtime evidence ---
+Probes total: 8
+Blocked: 3
+Challenge MFA: 1
+Allowed: 4
+Errors: 0
+
+--- Grouped critical/elevated items, least to most critical ---
+
+--- MODERATE RISK / MFA ---
+
+1. /api/a09-misinformation/process_image | risk=0.286 | zone=elevated | action=challenge_mfa
+   Vulnerabilities:
+   1) Vulnerability: Risk elevated, MFA challenge required
+      Location: review endpoint policy and runtime telemetry
+      Fix: Review endpoint policy, runtime telemetry and access controls for this anomaly.
+
+--- BLOCKED / CRITICAL ---
+
+1. /api/a09-misinformation/process_image | risk=1.500 | zone=blocked | action=block
+   Vulnerabilities:
+   1) Vulnerability: Request blocked due to risk zone blocked and score 1.5
+      Location: review endpoint policy and runtime telemetry
+      Fix: Review endpoint policy, runtime telemetry and access controls for this anomaly.

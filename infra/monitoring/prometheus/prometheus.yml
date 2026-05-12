@@ -1,0 +1,53 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+  - job_name: log_collector
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["log_collector:8000"]
+
+  - job_name: normalizer
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["normalizer:8000"]
+
+  - job_name: feature_extractor
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["feature_extractor:8000"]
+
+  - job_name: anomaly_detector
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["anomaly_detector:8000"]
+
+  - job_name: risk_engine
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["risk_engine:8000"]
+
+  - job_name: response_orchestrator
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["response_orchestrator:8000"]
+
+  - job_name: vuln_context
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["vuln_context:8000"]
+
+  - job_name: session_metrics
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["session_metrics:8000"]
+
+  - job_name: llm_guard
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["llm_guard:8000"]

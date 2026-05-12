@@ -1,0 +1,422 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Noir-discovered API",
+    "version": "1.0.0",
+    "description": "OpenAPI specification generated from OWASP Noir output for OWASP ZAP API scanning."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5050"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "get_root",
+        "summary": "GET /",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/challenges/<challenge_id>": {
+      "get": {
+        "operationId": "get_challenges_challenge_id",
+        "summary": "GET /challenges/<challenge_id>",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/model_status": {
+      "get": {
+        "operationId": "get_api_model_status",
+        "summary": "GET /api/model_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/set_model": {
+      "post": {
+        "operationId": "post_api_set_model",
+        "summary": "POST /api/set_model",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model_name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "model_name"
+                ]
+              },
+              "example": {
+                "model_name": "test"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/<challenge_id>": {
+      "post": {
+        "operationId": "post_api_challenge_id",
+        "summary": "POST /api/<challenge_id>",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/a04-data-and-model-poisoning/add_review": {
+      "post": {
+        "operationId": "post_api_a04_data_and_model_poisoning_add_review",
+        "summary": "POST /api/a04-data-and-model-poisoning/add_review",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "goat": {
+                    "type": "string"
+                  },
+                  "review": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "goat",
+                  "review"
+                ]
+              },
+              "example": {
+                "goat": "test",
+                "review": "test"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/a04-data-and-model-poisoning/get_reviews": {
+      "get": {
+        "operationId": "get_api_a04_data_and_model_poisoning_get_reviews",
+        "summary": "GET /api/a04-data-and-model-poisoning/get_reviews",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/a04-data-and-model-poisoning/delete_review": {
+      "delete": {
+        "operationId": "delete_api_a04_data_and_model_poisoning_delete_review",
+        "summary": "DELETE /api/a04-data-and-model-poisoning/delete_review",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/a04-data-and-model-poisoning/reset_reviews": {
+      "post": {
+        "operationId": "post_api_a04_data_and_model_poisoning_reset_reviews",
+        "summary": "POST /api/a04-data-and-model-poisoning/reset_reviews",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/a08-vector-embedding-weaknesses/export_vectors": {
+      "get": {
+        "operationId": "get_api_a08_vector_embedding_weaknesses_export_vectors",
+        "summary": "GET /api/a08-vector-embedding-weaknesses/export_vectors",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/a08-vector-embedding-weaknesses/import_vectors": {
+      "post": {
+        "operationId": "post_api_a08_vector_embedding_weaknesses_import_vectors",
+        "summary": "POST /api/a08-vector-embedding-weaknesses/import_vectors",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/a08-vector-embedding-weaknesses/reset_vectors": {
+      "get": {
+        "operationId": "get_api_a08_vector_embedding_weaknesses_reset_vectors",
+        "summary": "GET /api/a08-vector-embedding-weaknesses/reset_vectors",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/a09-misinformation/download_image": {
+      "get": {
+        "operationId": "get_api_a09_misinformation_download_image",
+        "summary": "GET /api/a09-misinformation/download_image",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/a09-misinformation/upload_image": {
+      "post": {
+        "operationId": "post_api_a09_misinformation_upload_image",
+        "summary": "POST /api/a09-misinformation/upload_image",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/a09-misinformation/process_image": {
+      "post": {
+        "operationId": "post_api_a09_misinformation_process_image",
+        "summary": "POST /api/a09-misinformation/process_image",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  }
+}

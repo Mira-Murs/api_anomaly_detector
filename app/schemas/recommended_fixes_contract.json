@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0",
+  "purpose": "Contract for CI/CD-compatible security remediation recommendations generated from runtime incidents and SAST/DAST/CVE context.",
+  "required_top_level_fields": [
+    "generated_at",
+    "summary",
+    "incidents",
+    "remediation_targets",
+    "project_wide_fixes"
+  ],
+  "required_summary_fields": [
+    "unique_vulnerabilities",
+    "sast_findings",
+    "cve_findings",
+    "dast_findings",
+    "dast_security_findings",
+    "dast_informational_findings",
+    "risk_prioritized_findings"
+  ],
+  "required_incident_fields": [
+    "endpoint",
+    "user",
+    "risk_score",
+    "risk_zone",
+    "action",
+    "findings",
+    "risk_prioritized",
+    "recommendations"
+  ],
+  "required_finding_fields": [
+    "source",
+    "group",
+    "finding",
+    "location",
+    "cve",
+    "cwe",
+    "recommendation"
+  ],
+  "allowed_values": {
+    "risk_zone": [
+      "normal",
+      "elevated",
+      "blocked"
+    ],
+    "action": [
+      "allow",
+      "challenge_mfa",
+      "block"
+    ],
+    "finding_group": [
+      "sast",
+      "dast",
+      "cve",
+      "unknown"
+    ],
+    "finding_source": [
+      "semgrep",
+      "zap",
+      "trivy",
+      "unknown"
+    ]
+  },
+  "ci_cd_rules": {
+    "risk_score_min": 0.0,
+    "risk_score_max": 1.5,
+    "recommendations_must_be_non_empty_for_incidents": true,
+    "findings_must_be_list": true,
+    "project_wide_fixes_must_be_list": true
+  },
+  "required_remediation_target_fields": [
+    "endpoint",
+    "affected_users",
+    "max_risk_score",
+    "highest_risk_zone",
+    "strongest_action",
+    "findings",
+    "risk_prioritized",
+    "recommendations"
+  ]
+}

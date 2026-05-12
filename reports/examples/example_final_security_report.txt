@@ -1,0 +1,48 @@
+======== ML-BASED ANOMALY DETECTION REPORT ========
+Generated: 2026-05-01 11:29:54 UTC
+
+--- Prioritized Incidents ---
+Endpoint: /api/a09-misinformation/process_image  Risk: 1.500  Zone: blocked  Action: block
+  User: attack_probe  Reason: Request blocked due to risk zone blocked and score 1.5
+  Endpoint-specific vulnerabilities: none mapped directly
+  Note: risk may still include anomaly score, cumulative session risk, and project-wide vulnerability context.
+  Recommended actions:
+    - Review access policies for endpoint /api/a09-misinformation/process_image
+    - Consider temporary blocking or increased monitoring
+
+Endpoint: /api/a09-misinformation/process_image  Risk: 1.500  Zone: blocked  Action: block
+  User: anonymous  Reason: Request blocked due to risk zone blocked and score 1.5
+  Endpoint-specific vulnerabilities: none mapped directly
+  Note: risk may still include anomaly score, cumulative session risk, and project-wide vulnerability context.
+  Recommended actions:
+    - Review access policies for endpoint /api/a09-misinformation/process_image
+    - Consider temporary blocking or increased monitoring
+
+Endpoint: /api/a09-misinformation/process_image  Risk: 0.286  Zone: elevated  Action: challenge_mfa
+  User: attack_probe  Reason: Risk elevated, MFA challenge required
+  Endpoint-specific vulnerabilities: none mapped directly
+  Note: risk may still include anomaly score, cumulative session risk, and project-wide vulnerability context.
+  Recommended actions:
+    - Review access policies for endpoint /api/a09-misinformation/process_image
+
+Endpoint: /api/a09-misinformation/process_image  Risk: 0.286  Zone: elevated  Action: challenge_mfa
+  User: anonymous  Reason: Risk elevated, MFA challenge required
+  Endpoint-specific vulnerabilities: none mapped directly
+  Note: risk may still include anomaly score, cumulative session risk, and project-wide vulnerability context.
+  Recommended actions:
+    - Review access policies for endpoint /api/a09-misinformation/process_image
+
+--- Vulnerability Summary ---
+Unique vulnerability findings: 0
+  SAST findings: 0
+  CVE findings: 0
+  DAST findings: 0
+    DAST security findings: 0
+    DAST informational findings: 0
+  Risk-prioritized findings: 0
+
+--- Project-wide Vulnerability Context ---
+Showing top 0 of 0 global findings.
+
+Recommended fixes YAML: /app/reports/recommended_fixes.yaml
+=======================================================

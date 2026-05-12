@@ -1,0 +1,44 @@
+{
+  "version": "1.0.0",
+  "purpose": "Contract for labeled API/LLM runtime examples used for validation, evaluation, and controlled model adaptation.",
+  "record_shape": {
+    "event": {
+      "required": ["timestamp", "method", "url", "status_code"],
+      "optional": [
+        "body_length",
+        "payload_preview",
+        "source",
+        "source_ip",
+        "user_id",
+        "tool_name",
+        "tool_method",
+        "tool_endpoint",
+        "tool_arguments",
+        "user_confirmed"
+      ]
+    },
+    "label": {
+      "required": ["is_anomaly", "attack_family", "expected_action", "label_source", "label_confidence"],
+      "optional": ["attack_tag", "notes"]
+    }
+  },
+  "allowed_values": {
+    "attack_family": [
+      "normal",
+      "sqli",
+      "xss",
+      "path_traversal",
+      "ssrf",
+      "prompt_injection",
+      "unsafe_tool_call",
+      "auth_abuse",
+      "rate_abuse",
+      "scanner_probe",
+      "unknown"
+    ],
+    "expected_action": ["allow", "challenge_mfa", "block"],
+    "label_source": ["manual", "synthetic_probe", "scanner", "dataset", "analyst_review"],
+    "label_confidence": ["low", "medium", "high"]
+  },
+  "training_rule": "Only records with label.attack_family=normal and label.is_anomaly=false may be used for one-class model training. Anomalous records are for validation, tests, and adaptation policy checks only."
+}

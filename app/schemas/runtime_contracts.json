@@ -1,0 +1,122 @@
+{
+  "version": "1.0.0",
+  "purpose": "Runtime data contracts for API anomaly detection, vulnerability context, LLM/tool-call security, and labeling.",
+  "schemas": {
+    "raw_api_event": {
+      "required": ["timestamp", "method", "url", "status_code"],
+      "fields": {
+        "timestamp": "ISO-8601 UTC timestamp of the observed request",
+        "method": "HTTP method: GET, POST, PUT, DELETE, PATCH, etc.",
+        "url": "Request path or URL observed by the gateway/collector",
+        "status_code": "HTTP response status code",
+        "body_length": "Response/request body length when available",
+        "payload_preview": "Truncated payload preview for feature extraction and LLM guard checks",
+        "attack_tag": "Optional label for synthetic or validation probes",
+        "is_anomaly": "Optional ground-truth label for validation/training data",
+        "source": "Origin of the event: runtime, traffic, probe, adaptation, test",
+        "source_ip": "Client IP resolved by gateway, X-Forwarded-For, or request client",
+        "user_id": "Application user/session identifier when available",
+        "tool_name": "Optional LLM tool/function name requested by the model",
+        "tool_method": "Optional HTTP method for LLM/API tool call",
+        "tool_endpoint": "Optional endpoint targeted by LLM/API tool call",
+        "tool_arguments": "Optional structured arguments for LLM/API tool call",
+        "user_confirmed": "Whether the user explicitly confirmed the high-risk action"
+      }
+    },
+    "normalized_api_event": {
+      "required": ["method", "url", "status_code", "body_length", "payload_preview", "source_ip"],
+      "fields": {
+        "method": "Uppercase HTTP method",
+        "url": "Lowercase normalized URL/path with duplicate slashes collapsed",
+        "status_code": "HTTP response status code",
+        "body_length": "Body length preserved from raw event",
+        "payload_preview": "Payload preview truncated to service limit",
+        "source_ip": "Resolved client IP"
+      }
+    },
+    "feature_vector": {
+      "length": 17,
+      "ordered_features": [
+        "duration",
+        "freq",
+        "is_delete",
+        "is_get",
+        "is_post",
+        "is_put",
+        "len_body",
+        "mean_interval",
+        "url_entropy",
+        "suspicious_patterns",
+        "url_depth",
+        "payload_entropy",
+        "status_4xx",
+        "status_5xx",
+        "num_query",
+        "payload_len",
+        "uniq_ep"
+      ]
+    },
+    "anomaly_result": {
+      "fields": {
+        "anomaly_score": "Final behavioral anomaly score f(x) in [0, 1]",
+        "base_model_score": "IsolationForest-derived base score after scaling",
+        "runtime_boost": "Rule-based runtime signal boost",
+        "runtime_boost_reasons": "Structured explanation for runtime boost"
+      }
+    },
+    "vulnerability_context": {
+      "fields": {
+        "vulnerability_weight": "Endpoint vulnerability weight V(e), normally in [V_base, 1.5]",
+        "cvss": "Maximum CVSS score among applicable findings",
+        "exploitable": "True when runtime evidence confirms practical exploitability",
+        "applicable_findings": "Findings mapped directly to the endpoint",
+        "related_findings": "Project-wide or related findings not used as endpoint-applicable risk",
+        "mapping_confidence": "endpoint, global_related_only, or other mapping confidence marker"
+      }
+    },
+    "risk_result": {
+      "formula": "R(x) = f(x) * V(e)",
+      "fields": {
+        "risk_score": "Contextual risk score R(x)",
+        "risk_zone": "normal, elevated, or blocked",
+        "vulnerability_weight": "V(e) used for risk calculation",
+        "thresholds_used": "theta1, theta2, anomaly_warn, exploitable, cvss, applicable_findings_count",
+        "cumulative_risk": "Session-level exponentially weighted cumulative risk"
+      }
+    },
+    "decision_result": {
+      "mapping": {
+        "normal": "allow",
+        "elevated": "challenge_mfa",
+        "blocked": "block"
+      },
+      "fields": {
+        "action": "allow, challenge_mfa, or block",
+        "message": "Human-readable decision reason",
+        "block_duration_seconds": "Temporary block or MFA window duration"
+      }
+    },
+    "llm_tool_context": {
+      "fields": {
+        "prompt": "Prompt or untrusted text content to check",
+        "context_type": "generic, email, document, tool_result, web_page, etc.",
+        "tool_name": "Requested LLM tool/function",
+        "method": "HTTP/tool method",
+        "endpoint": "Target endpoint or URL",
+        "arguments": "Structured tool arguments",
+        "user_confirmed": "Explicit confirmation for high-risk action",
+        "risk_zone": "Current risk zone before LLM guard escalation"
+      }
+    },
+    "label_schema": {
+      "fields": {
+        "is_anomaly": "Boolean ground-truth label",
+        "attack_tag": "Synthetic or known attack category",
+        "attack_family": "sqli, xss, path_traversal, prompt_injection, ssrf, abuse, normal, etc.",
+        "expected_action": "allow, challenge_mfa, block",
+        "label_source": "manual, synthetic_probe, scanner, dataset, analyst_review",
+        "label_confidence": "low, medium, high"
+      }
+    }
+  }
+}
