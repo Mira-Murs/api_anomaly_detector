@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import numpy as np
 import joblib
+import hashlib
+from model_loader import ModelLoader
 import os
 import math
 import json
@@ -66,8 +68,8 @@ def atomic_npy_save(path: Path, arr: np.ndarray) -> None:
 @app.on_event("startup")
 def load_model():
     global model, scaler
-    model = joblib.load(MODEL_PATH)
-    scaler = joblib.load(SCALER_PATH)
+    model = ModelLoader(MODEL_PATH).load()
+    scaler = ModelLoader(SCALER_PATH).load()
 
 class FeatureVector(BaseModel):
     features: list
@@ -196,6 +198,22 @@ def runtime_signal_boost(features: list) -> tuple[float, dict]:
         }
 
     return min(boost, 0.35), reasons
+
+
+
+def write_hash_file(path: str) -> str:
+    artifact_path = Path(path)
+    hash_path = artifact_path.with_suffix(".hash")
+    h = hashlib.sha256()
+    with artifact_path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    tmp_path = hash_path.with_suffix(hash_path.suffix + ".tmp")
+    with tmp_path.open("w", encoding="utf-8") as f:
+        json.dump({"hash": h.hexdigest()}, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    tmp_path.replace(hash_path)
+    return str(hash_path)
 
 
 @app.post("/detect")
@@ -329,6 +347,8 @@ async def update_model(data: UpdateData):
     atomic_npy_save(TRAINING_DATA_PATH, combined)
     atomic_joblib_dump(new_model, MODEL_PATH)
     atomic_joblib_dump(new_scaler, SCALER_PATH)
+    model_hash = write_hash_file(MODEL_PATH)
+    scaler_hash = write_hash_file(SCALER_PATH)
 
     model = new_model
     scaler = new_scaler
@@ -340,6 +360,8 @@ async def update_model(data: UpdateData):
         "total_samples": int(len(combined)),
         "model_backup": model_backup,
         "scaler_backup": scaler_backup,
+        "model_hash": model_hash,
+        "scaler_hash": scaler_hash,
     }
 
     append_audit({

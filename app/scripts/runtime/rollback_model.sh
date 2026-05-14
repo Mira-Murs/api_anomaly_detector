@@ -46,6 +46,30 @@ cp "$SCALER_FILE" "$SCALER_FILE.before_rollback_${rollback_id}.bak"
 cp "$latest_model_backup" "$MODEL_FILE"
 cp "$latest_scaler_backup" "$SCALER_FILE"
 
+MODEL_FILE="$MODEL_FILE" SCALER_FILE="$SCALER_FILE" python3 - <<'PY_HASH'
+import hashlib
+import json
+import os
+from pathlib import Path
+
+for artifact_path in [
+    Path(os.environ["MODEL_FILE"]),
+    Path(os.environ["SCALER_FILE"]),
+]:
+    h = hashlib.sha256()
+    with artifact_path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+
+    hash_path = artifact_path.with_suffix(".hash")
+    tmp_path = hash_path.with_suffix(hash_path.suffix + ".tmp")
+    with tmp_path.open("w", encoding="utf-8") as f:
+        json.dump({"hash": h.hexdigest()}, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    tmp_path.replace(hash_path)
+    print(f"Updated hash: {hash_path}")
+PY_HASH
+
 python3 - <<PY
 import json
 from datetime import datetime, timezone

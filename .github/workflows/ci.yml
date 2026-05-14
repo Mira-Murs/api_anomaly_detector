@@ -24,7 +24,7 @@ jobs:
           bash -n app/scripts/runtime/run_ml_report.sh
           bash -n app/scripts/runtime/continuous_worker.sh
           bash -n app/scripts/runtime/generate_traffic.sh
-          bash -n app/scripts/runtime/safe_update_model.sh
+          bash -n app/scripts/runtime/rollback_model.sh
 
       - name: Validate Python syntax
         run: |
@@ -43,6 +43,7 @@ jobs:
             app/scripts/validation/validate_runtime_contracts.py \
             app/scripts/validation/validate_labeled_events.py \
             app/scripts/validation/validate_recommended_fixes.py \
+            app/scripts/validation/validate_model_hashes.py \
             app/adapt_model.py
 
       - name: Install validation dependencies
@@ -60,6 +61,7 @@ jobs:
           if [ -f artifacts/reports/recommended_fixes.yaml ]; then
             python app/scripts/validation/validate_recommended_fixes.py artifacts/reports/recommended_fixes.yaml
           fi
+          python app/scripts/validation/validate_model_hashes.py
 
       - name: Validate Docker Compose
         run: docker compose -f infra/docker-compose.yml config
@@ -83,3 +85,17 @@ jobs:
           format: table
           exit-code: "0"
           severity: CRITICAL,HIGH,MEDIUM
+
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-artifacts
+          if-no-files-found: warn
+          path: |
+            artifacts/models/config.json
+            artifacts/models/feature_names.json
+            artifacts/models/*.hash
+            artifacts/thresholds/optimal_thresholds.json
+            reports/examples/*
+
